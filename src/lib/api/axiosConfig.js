@@ -64,7 +64,7 @@ apiClient.interceptors.response.use(
 
         // Call refresh token endpoint
         const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/v1/auth/refresh`,
           { refreshToken }
         );
 

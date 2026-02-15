@@ -20,6 +20,7 @@ export default {
   logout: async () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("profile");
     delete apiClient.defaults.headers.common["Authorization"];
     return { success: true };
   },
