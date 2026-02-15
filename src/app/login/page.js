@@ -17,16 +17,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
+  // useEffect(() => {
+  //   try {
+  //     const accessToken = localStorage.getItem("accessToken");
+  //     const refreshToken = localStorage.getItem("refreshToken");
 
-      if (accessToken && refreshToken) {
-        router.replace("/tasks");
-      }
-    } catch {}
-  }, [router]);
+  //     if (accessToken && refreshToken) {
+  //       router.replace("/tasks");
+  //     }
+  //   } catch {}
+  // }, [router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
