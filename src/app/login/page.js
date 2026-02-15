@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Mail, Lock, ChevronLeft } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import { useRouter } from "next/navigation";
@@ -16,17 +16,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //   try {
-  //     const accessToken = localStorage.getItem("accessToken");
-  //     const refreshToken = localStorage.getItem("refreshToken");
-
-  //     if (accessToken && refreshToken) {
-  //       router.replace("/tasks");
-  //     }
-  //   } catch {}
-  // }, [router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
