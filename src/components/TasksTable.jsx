@@ -1,9 +1,9 @@
 import { Calendar } from "lucide-react";
-import { formatDistanceToNow, parseISO } from "date-fns";
 import React, { useState } from "react";
 import { PriorityBadge, StatusBadge } from "@/constants/constants";
 import { Clipboard } from "lucide-react";
 import Link from "next/link";
+import { formatDate } from "@/util/util";
 
 export default function TasksTable({
   tasks,
@@ -13,17 +13,6 @@ export default function TasksTable({
   onTaskUpdate,
 }) {
   const [expandedRows, setExpandedRows] = useState({});
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "—";
-    try {
-      const date =
-        typeof dateString === "string" ? parseISO(dateString) : dateString;
-      return formatDistanceToNow(date, { addSuffix: true });
-    } catch {
-      return dateString;
-    }
-  };
 
   const toggleRow = (id) => {
     setExpandedRows((prev) => ({
@@ -142,7 +131,7 @@ export default function TasksTable({
                 {expandedRows[task.taskId] && (
                   <tr className="bg-gray-50">
                     <td colSpan={5} className="px-6 py-3 text-sm text-gray-700">
-                      <strong>Full Description:</strong>{" "}
+                      <strong>Description:</strong>{" "}
                       {task.description || "No description provided"}
                     </td>
                   </tr>

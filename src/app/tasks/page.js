@@ -51,7 +51,9 @@ export default function TasksPage() {
         setTasksError("Failed to load tasks.");
       }
     } catch (err) {
-      setTasksError("Something went wrong while fetching tasks.");
+      setTasksError(
+        err?.response?.data?.msg || "Something went wrong while fetching tasks."
+      );
     } finally {
       setTasksLoading(false);
       setLoadingMore(false);
@@ -76,32 +78,27 @@ export default function TasksPage() {
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
-    setTimeout(() => setSelectedTask(null), 300); // Clear after animation
+    setTimeout(() => setSelectedTask(null), 300);
   };
 
   const handleTaskUpdate = (updatedTask) => {
-    // Update the task in the tasks list
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
         task.taskId === updatedTask.taskId ? updatedTask : task
       )
     );
 
-    // Update the selected task
     setSelectedTask(updatedTask);
   };
 
   const handleTaskDelete = (taskId) => {
-    // Remove the task from the tasks list
     setTasks((prevTasks) => prevTasks.filter((task) => task.taskId !== taskId));
 
-    // Close the sidebar if the deleted task was open
     if (selectedTask?.taskId === taskId) {
       closeSidebar();
     }
   };
 
-  // Client-side filtering
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
       const matchesSearch =
@@ -150,7 +147,6 @@ export default function TasksPage() {
                   <option value="CREATED">To Do</option>
                   <option value="IN_PROGRESS">In Progress</option>
                   <option value="COMPLETED">Done</option>
-                  <option value="BLOCKED">Blocked</option>
                 </select>
 
                 <select
