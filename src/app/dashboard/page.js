@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import DashboardHeader from "@/components/DashboardHeader";
 import DashboardStat from "@/components/DashboardStat";
 import TaskProgress from "@/components/TaskProgress";
-import RecentTaskTable from "@/components/RecentTaskTable";
 
 export default function DashboardPage() {
   return (
@@ -12,7 +11,6 @@ export default function DashboardPage() {
         <DashboardHeader />
         <DashboardStat />
         <TaskProgress />
-        <RecentTaskTable />
       </div>
     </div>
   );

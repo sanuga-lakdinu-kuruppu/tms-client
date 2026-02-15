@@ -65,44 +65,6 @@ export const StatusBadge = ({ status }) => {
 
 export const PAGE_SIZE = 10;
 
-export const LATEST_TASKS = [
-  {
-    task: "Update user dashboard",
-    status: "In Progress",
-    priority: "High",
-    due: "Today",
-    assignee: "John",
-  },
-  {
-    task: "Fix navigation bug",
-    status: "To Do",
-    priority: "Medium",
-    due: "Tomorrow",
-    assignee: "Sarah",
-  },
-  {
-    task: "Design system updates",
-    status: "Review",
-    priority: "Low",
-    due: "Next week",
-    assignee: "Mike",
-  },
-  {
-    task: "API integration",
-    status: "Completed",
-    priority: "High",
-    due: "Yesterday",
-    assignee: "Alex",
-  },
-  {
-    task: "Write documentation",
-    status: "In Progress",
-    priority: "Medium",
-    due: "Friday",
-    assignee: "Emily",
-  },
-];
-
 export const BAR_CHART_STAT = [
   { label: "To Do", value: 40, color: "bg-gray-200" },
   { label: "In Progress", value: 65, color: "bg-blue-500" },

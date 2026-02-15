@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { Mail, Lock, ChevronLeft } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
-import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import api from "@/lib/api";
+import Link from "next/link";
+import { validateLogin } from "@/util/util";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function LoginPage() {
       const refreshToken = localStorage.getItem("refreshToken");
 
       if (accessToken && refreshToken) {
-        router.replace("/dashboard");
+        router.replace("/tasks");
       }
     } catch {}
   }, [router]);
@@ -33,36 +34,22 @@ export default function LoginPage() {
 
     setError("");
 
-    const normalizedEmail = email.trim().toLowerCase();
-
-    if (!normalizedEmail && !password) {
-      setError("Oops! Please enter your email and password to continue.");
-      return;
-    } else if (!normalizedEmail) {
-      setError("We need your email to log you in.");
-      return;
-    } else if (!password) {
-      setError("Your password is missing. Please enter it to continue.");
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      setError(
-        "Hmm… that doesn’t look like a valid email address. Please check and try again."
-      );
+    const errorMessage = validateLogin(email, password);
+    if (errorMessage) {
+      setError(errorMessage);
       return;
     }
 
     try {
       setLoading(true);
-
+      const normalizedEmail = email?.trim().toLowerCase();
       const response = await api.auth.login({
         email: normalizedEmail,
         password,
       });
 
       if (response.status === 200 && response.data) {
-        router.replace("/dashboard");
+        router.replace("/tasks");
       }
     } catch (err) {
       setError(
@@ -146,7 +133,7 @@ export default function LoginPage() {
           <label className="flex items-center gap-2 text-gray-600">
             <input
               type="checkbox"
-              className="accent-[#0045E6]"
+              className="accent-[#0045E6] cursor-pointer"
               disabled={loading}
             />
             Remember me
@@ -154,7 +141,7 @@ export default function LoginPage() {
 
           <Link
             href="/forgot-password"
-            className="text-[#0045E6] hover:underline"
+            className="text-[#0045E6] hover:underline cursor-pointer"
           >
             Forgot password?
           </Link>
@@ -174,7 +161,7 @@ export default function LoginPage() {
         Don’t have an account?{" "}
         <Link
           href="/register"
-          className="text-[#0045E6] font-medium hover:underline"
+          className="text-[#0045E6] font-medium hover:underline cursor-pointer"
         >
           Create one
         </Link>

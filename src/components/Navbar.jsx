@@ -27,15 +27,18 @@ export default function Navbar() {
           setProfileLoading(true);
           const res = await api.user.getCurrentUser();
 
-          if (res.status === 200 && res.data?.data?.profile) {
+          if (res.status === 200) {
             const user = res.data.data.profile;
             setProfile(user);
             localStorage.setItem("profile", JSON.stringify(user));
           } else {
             setProfileError("Failed to load your profile. Please try again.");
           }
-        } catch {
-          setProfileError("Something went wrong while fetching your profile.");
+        } catch (err) {
+          setProfileError(
+            err?.response?.data?.msg ||
+              "Failed to load your profile. Please try again."
+          );
         } finally {
           setProfileLoading(false);
         }
@@ -70,7 +73,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-1">
           <Link
             href="/dashboard"
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${
+            className={`px-4 py-1.5 rounded-md text-sm cursor-pointer font-medium transition ${
               pathname === "/dashboard"
                 ? "bg-gray-100 text-gray-900"
                 : "text-gray-700 hover:bg-gray-100"
@@ -168,7 +171,7 @@ export default function Navbar() {
                         {profile.role}
                       </p>
                     </div>
-                    <Link
+                    {/* <Link
                       href="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
@@ -179,10 +182,10 @@ export default function Navbar() {
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       Settings
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 flex items-center space-x-2"
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 flex items-center space-x-2 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Log out</span>
