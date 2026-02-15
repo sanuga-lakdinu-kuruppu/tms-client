@@ -40,10 +40,10 @@ export default function Hero() {
               </Link>
 
               <Link
-                href="/demo"
+                href="/login"
                 className="px-6 py-3 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition font-medium inline-flex items-center justify-center"
               >
-                Watch demo
+                Already have an account?
               </Link>
             </div>
 

@@ -1,8 +1,8 @@
 import { X, Edit2 } from "lucide-react";
-import { formatDistanceToNow, parseISO } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { PriorityBadge, StatusBadge } from "@/constants/constants";
+import { formatDate, validateTask } from "@/util/util";
 
 export default function Sidebar({
   isOpen,
@@ -16,19 +16,7 @@ export default function Sidebar({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "—";
-    try {
-      const date =
-        typeof dateString === "string" ? parseISO(dateString) : dateString;
-      return formatDistanceToNow(date, { addSuffix: true });
-    } catch {
-      return dateString;
-    }
-  };
-
-  // Initialize edited task when selected task changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedTask) {
       setEditedTask({ ...selectedTask });
     }
@@ -47,11 +35,17 @@ export default function Sidebar({
   const handleSave = async () => {
     if (!editedTask) return;
 
+    const validationError = validateTask(editedTask);
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setIsSaving(true);
     setError("");
 
     try {
-      console.log(typeof editedTask.priority);
       const response = await api.task.updateTask(editedTask.taskId, {
         name: editedTask.name,
         description: editedTask.description,
@@ -66,7 +60,9 @@ export default function Sidebar({
         setError("Failed to update task.");
       }
     } catch (err) {
-      setError("Something went wrong while updating.");
+      setError(
+        err?.response?.data?.msg || "Something went wrong while updating."
+      );
     } finally {
       setIsSaving(false);
     }
@@ -87,12 +83,14 @@ export default function Sidebar({
       if (response.status === 200) {
         onTaskDelete?.(editedTask.taskId);
         setIsEditing(false);
-        onClose?.(); // close sidebar after deletion
+        onClose?.();
       } else {
         setError("Failed to delete task.");
       }
     } catch (err) {
-      setError("Something went wrong while deleting.");
+      setError(
+        err?.response?.data?.msg || "Something went wrong while deleting."
+      );
     } finally {
       setIsSaving(false);
     }

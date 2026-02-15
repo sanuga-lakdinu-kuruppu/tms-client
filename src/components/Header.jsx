@@ -11,8 +11,8 @@ export default function Header() {
     <header className="w-full bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          {/* Logo + Name */}
+          <Link href="/" className="flex items-center flex-shrink-0 gap-3">
             <Image
               src="/logo.svg"
               alt="TaskFlow"
@@ -21,29 +21,10 @@ export default function Header() {
               className="h-10 w-auto object-contain"
               priority
             />
+            <span className="text-lg font-semibold text-gray-800">
+              Twist Digital TMS
+            </span>
           </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link
-              href="#features"
-              className="text-gray-600 hover:text-gray-900 transition text-sm font-medium"
-            >
-              Features
-            </Link>
-            <Link
-              href="#pricing"
-              className="text-gray-600 hover:text-gray-900 transition text-sm font-medium"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="#about"
-              className="text-gray-600 hover:text-gray-900 transition text-sm font-medium"
-            >
-              About
-            </Link>
-          </nav>
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-4">
@@ -79,24 +60,9 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <nav className="flex flex-col space-y-3">
-              <Link
-                href="#features"
-                className="text-gray-600 hover:text-gray-900 px-2 py-1.5 text-sm font-medium"
-              >
-                Features
-              </Link>
-              <Link
-                href="#pricing"
-                className="text-gray-600 hover:text-gray-900 px-2 py-1.5 text-sm font-medium"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="#about"
-                className="text-gray-600 hover:text-gray-900 px-2 py-1.5 text-sm font-medium"
-              >
-                About
-              </Link>
+              <div className="text-center text-lg font-semibold text-gray-800">
+                Twist Digital TMS
+              </div>
               <div className="pt-3 flex flex-col gap-2">
                 <Link
                   href="/login"
