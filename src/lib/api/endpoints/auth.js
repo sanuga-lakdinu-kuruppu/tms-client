@@ -1,4 +1,5 @@
 import apiClient from "../axiosConfig";
+import { resetCsrfToken } from "../csrf";
 
 export default {
   register: async (data) => {
@@ -14,6 +15,7 @@ export default {
 
   logout: async () => {
     const response = await apiClient.post("/v1/auth/logout");
+    resetCsrfToken();
     return response;
   },
 
