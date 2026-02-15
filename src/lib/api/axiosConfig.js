@@ -2,6 +2,7 @@ import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  withCredentials: true, // important for sending cookies
   headers: {
     "Content-Type": "application/json",
   },
@@ -22,15 +23,10 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// Add Authorization header for every request
+// Add Authorization header for every request (optional, only if needed)
 apiClient.interceptors.request.use(
   (config) => {
-    if (typeof window !== "undefined") {
-      const accessToken = localStorage.getItem("accessToken");
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-    }
+    // You can skip this if backend reads cookie only
     return config;
   },
   (error) => Promise.reject(error)
@@ -38,7 +34,7 @@ apiClient.interceptors.request.use(
 
 // Handle responses and refresh token if expired
 apiClient.interceptors.response.use(
-  (response) => response, // return full response so auth.js can access response.data
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
@@ -48,8 +44,7 @@ apiClient.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
+          .then(() => {
             return apiClient(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -59,34 +54,16 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) throw new Error("No refresh token available");
+        // Call refresh token endpoint, cookies sent automatically
+        await apiClient.post("/v1/auth/refresh");
 
-        // Call refresh token endpoint
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/v1/auth/refresh`,
-          { refreshToken }
-        );
-
-        // Save new tokens
-        localStorage.setItem("accessToken", data.data.accessToken);
-        localStorage.setItem("refreshToken", data.data.refreshToken);
-
-        // Update headers
-        apiClient.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${data.data.accessToken}`;
-        originalRequest.headers[
-          "Authorization"
-        ] = `Bearer ${data.data.accessToken}`;
-
-        processQueue(null, data.data.accessToken);
+        processQueue(null);
 
         return apiClient(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         processQueue(refreshError, null);
+
+        // Redirect to login
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }
@@ -97,14 +74,12 @@ apiClient.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      // Unauthorized — redirect to login
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
     }
 
-    // Other errors
     return Promise.reject(error);
   }
 );
