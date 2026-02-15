@@ -1,4 +1,5 @@
 import axios from "axios";
+import { fetchCsrfToken, resetCsrfToken } from "./csrf";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -23,16 +24,13 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// Add Authorization header for every request (optional, only if needed)
 apiClient.interceptors.request.use(
   (config) => {
-    // You can skip this if backend reads cookie only
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Handle responses and refresh token if expired
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -56,6 +54,7 @@ apiClient.interceptors.response.use(
       try {
         // Call refresh token endpoint, cookies sent automatically
         await apiClient.post("/v1/auth/refresh");
+        resetCsrfToken();
 
         processQueue(null);
 
@@ -83,5 +82,13 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+apiClient.interceptors.request.use(async (config) => {
+  if (["post", "put", "delete"].includes(config.method)) {
+    const token = await fetchCsrfToken();
+    config.headers["x-csrf-token"] = token;
+  }
+  return config;
+});
 
 export default apiClient;
