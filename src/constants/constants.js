@@ -1,4 +1,145 @@
-import { LayoutDashboard, Clock, Users, Shield, Zap, Star } from "lucide-react";
+import {
+  LayoutDashboard,
+  Clock,
+  Users,
+  Shield,
+  Zap,
+  Star,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
+
+export const PriorityBadge = ({ priority }) => {
+  const getPriorityStyle = (value) => {
+    if (value >= 9) return "bg-red-100 text-red-700";
+    if (value >= 7) return "bg-orange-100 text-orange-700";
+    if (value >= 5) return "bg-yellow-100 text-yellow-700";
+    if (value >= 3) return "bg-blue-100 text-blue-700";
+    return "bg-green-100 text-green-700";
+  };
+
+  const getPriorityLabel = (value) => {
+    if (value >= 9) return "Critical";
+    if (value >= 7) return "High";
+    if (value >= 5) return "Medium";
+    if (value >= 3) return "Low";
+    return "Trivial";
+  };
+
+  return (
+    <span
+      className={`inline-flex px-2 py-[2px] rounded text-xs font-semibold ${getPriorityStyle(
+        priority
+      )}`}
+    >
+      {getPriorityLabel(priority)} (P{priority})
+    </span>
+  );
+};
+
+export const StatusBadge = ({ status }) => {
+  const statusStyles = {
+    CREATED: "bg-blue-100 text-blue-700",
+    PENDING: "bg-yellow-100 text-yellow-700",
+    IN_PROGRESS: "bg-yellow-100 text-yellow-700",
+    COMPLETED: "bg-green-100 text-green-700",
+  };
+
+  const statusLabels = {
+    CREATED: "To Do",
+    PENDING: "Pending",
+    IN_PROGRESS: "In Progress",
+    COMPLETED: "Done",
+  };
+
+  return (
+    <span
+      className={`inline-flex px-2 py-[2px] rounded text-xs font-semibold ${
+        statusStyles[status] || "bg-gray-100 text-gray-700"
+      }`}
+    >
+      {statusLabels[status] || status}
+    </span>
+  );
+};
+
+export const PAGE_SIZE = 10;
+
+export const LATEST_TASKS = [
+  {
+    task: "Update user dashboard",
+    status: "In Progress",
+    priority: "High",
+    due: "Today",
+    assignee: "John",
+  },
+  {
+    task: "Fix navigation bug",
+    status: "To Do",
+    priority: "Medium",
+    due: "Tomorrow",
+    assignee: "Sarah",
+  },
+  {
+    task: "Design system updates",
+    status: "Review",
+    priority: "Low",
+    due: "Next week",
+    assignee: "Mike",
+  },
+  {
+    task: "API integration",
+    status: "Completed",
+    priority: "High",
+    due: "Yesterday",
+    assignee: "Alex",
+  },
+  {
+    task: "Write documentation",
+    status: "In Progress",
+    priority: "Medium",
+    due: "Friday",
+    assignee: "Emily",
+  },
+];
+
+export const BAR_CHART_STAT = [
+  { label: "To Do", value: 40, color: "bg-gray-200" },
+  { label: "In Progress", value: 65, color: "bg-blue-500" },
+  { label: "Review", value: 25, color: "bg-yellow-500" },
+  { label: "Completed", value: 80, color: "bg-green-500" },
+];
+
+export const STAT = [
+  {
+    label: "Total Tasks",
+    value: "24",
+    icon: CheckCircle,
+    color: "text-green-600",
+    bg: "bg-green-100",
+  },
+  {
+    label: "In Progress",
+    value: "12",
+    icon: Clock,
+    color: "text-blue-600",
+    bg: "bg-blue-100",
+  },
+  {
+    label: "Completed",
+    value: "8",
+    icon: CheckCircle,
+    color: "text-purple-600",
+    bg: "bg-purple-100",
+  },
+  {
+    label: "Overdue",
+    value: "4",
+    icon: AlertCircle,
+    color: "text-red-600",
+    bg: "bg-red-100",
+  },
+];
 
 export const AVATARS = [
   {
