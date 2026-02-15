@@ -13,7 +13,8 @@ export default {
   },
 
   logout: async () => {
-    return { success: true };
+    const response = await apiClient.post("/v1/auth/logout");
+    return response;
   },
 
   refreshToken: async () => {
