@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogOut, Search, Bell } from "lucide-react";
+import Spinner from "@/components/Spinner";
 import Link from "next/link";
 import api from "@/lib/api";
 
@@ -13,50 +14,49 @@ export default function Navbar() {
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
 
   useEffect(() => {
-    const localProfile = localStorage.getItem("profile");
+    const fetchProfile = async () => {
+      try {
+        setProfileLoading(true);
+        const res = await api.user.getCurrentUser();
 
-    if (localProfile) {
-      const user = JSON.parse(localProfile);
-      setProfile(user);
-      setProfileLoading(false);
-    } else {
-      const fetchProfile = async () => {
-        try {
-          setProfileLoading(true);
-          const res = await api.user.getCurrentUser();
-
-          if (res.status === 200) {
-            const user = res.data.data.profile;
-            setProfile(user);
-            localStorage.setItem("profile", JSON.stringify(user));
-          } else {
-            setProfileError("Failed to load your profile. Please try again.");
-          }
-        } catch (err) {
-          setProfileError(
-            err?.response?.data?.msg ||
-              "Failed to load your profile. Please try again."
-          );
-        } finally {
-          setProfileLoading(false);
+        if (res.status === 200) {
+          const user = res.data.data.profile;
+          setProfile(user);
+        } else {
+          setProfileError("Failed to load your profile. Please try again.");
         }
-      };
+      } catch (err) {
+        setProfileError(
+          err?.response?.data?.msg ||
+            "Failed to load your profile. Please try again."
+        );
+      } finally {
+        setProfileLoading(false);
+      }
+    };
 
-      fetchProfile();
-    }
+    fetchProfile();
   }, []);
 
   const handleLogout = async () => {
     try {
+      setLogoutLoading(true);
       const logoutResponse = await api.auth.logout();
-      if (logoutResponse.success) {
-        localStorage.removeItem("profile");
+      if (logoutResponse.status === 200) {
         router.replace("/login");
+      } else {
+        setLogoutError("Failed to logout. Please try again.");
       }
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch (err) {
+      setLogoutError(
+        err?.response?.data?.msg || "Failed to logout. Please try again."
+      );
+    } finally {
+      setLogoutLoading(false);
     }
   };
 
@@ -185,10 +185,15 @@ export default function Navbar() {
                     </Link> */}
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 flex items-center space-x-2 cursor-pointer"
+                      disabled={logoutLoading}
+                      className={`w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 flex items-center space-x-2 cursor-pointer ${
+                        logoutLoading ? "opacity-70 cursor-not-allowed" : ""
+                      }`}
                     >
-                      <LogOut className="w-4 h-4" />
-                      <span>Log out</span>
+                      {logoutLoading && <Spinner size={4} color="red" />}
+                      <span>
+                        {logoutLoading ? "Logging out..." : "Log out"}
+                      </span>
                     </button>
                   </div>
                 </>
