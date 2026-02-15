@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import api from "@/lib/api";
+import { validateTask } from "@/util/util";
 
 export default function NewTaskPage() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function NewTaskPage() {
     name: "",
     description: "",
     status: "CREATED",
-    priority: 5,
+    priority: 1,
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -22,10 +23,17 @@ export default function NewTaskPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSaving(true);
-    setError("");
 
     try {
+      const validationError = validateTask(task);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+
+      setIsSaving(true);
+      setError("");
+
       const res = await api.task.createTask({
         name: task.name,
         description: task.description,
@@ -39,7 +47,9 @@ export default function NewTaskPage() {
         setError("Failed to create task.");
       }
     } catch (err) {
-      setError("Something went wrong while creating task.");
+      setError(
+        err?.response?.data?.msg || "Something went wrong while creating task."
+      );
     } finally {
       setIsSaving(false);
     }
@@ -48,7 +58,8 @@ export default function NewTaskPage() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <Navbar />
-      <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-6">
+
+      <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow mt-6">
         <h2 className="text-xl font-semibold mb-4">Create New Task</h2>
 
         {error && (
@@ -136,7 +147,7 @@ export default function NewTaskPage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
             >
               {isSaving ? "Creating..." : "Create Task"}
             </button>
@@ -144,7 +155,7 @@ export default function NewTaskPage() {
               type="button"
               onClick={() => router.push("/tasks")}
               disabled={isSaving}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
+              className="px-4 py-2 cursor-pointer bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50"
             >
               Cancel
             </button>
