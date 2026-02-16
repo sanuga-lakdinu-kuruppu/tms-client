@@ -18,28 +18,36 @@ export default function Navbar() {
   const [logoutError, setLogoutError] = useState("");
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setProfileLoading(true);
-        const res = await api.user.getCurrentUser();
+    const localProfile = localStorage.getItem("profile");
+    if (localProfile) {
+      const user = JSON.parse(localProfile);
+      setProfile(user);
+      setProfileLoading(false);
+    } else {
+      const fetchProfile = async () => {
+        try {
+          setProfileLoading(true);
+          const res = await api.user.getCurrentUser();
 
-        if (res.status === 200) {
-          const user = res.data.data.profile;
-          setProfile(user);
-        } else {
-          setProfileError("Failed to load your profile. Please try again.");
+          if (res.status === 200) {
+            const user = res.data.data.profile;
+            setProfile(user);
+            localStorage.setItem("profile", JSON.stringify(user));
+          } else {
+            setProfileError("Failed to load your profile. Please try again.");
+          }
+        } catch (err) {
+          setProfileError(
+            err?.response?.data?.msg ||
+              "Failed to load your profile. Please try again."
+          );
+        } finally {
+          setProfileLoading(false);
         }
-      } catch (err) {
-        setProfileError(
-          err?.response?.data?.msg ||
-            "Failed to load your profile. Please try again."
-        );
-      } finally {
-        setProfileLoading(false);
-      }
-    };
+      };
 
-    fetchProfile();
+      fetchProfile();
+    }
   }, []);
 
   const handleLogout = async () => {
@@ -48,6 +56,7 @@ export default function Navbar() {
       const logoutResponse = await api.auth.logout();
       if (logoutResponse.status === 200) {
         router.replace("/login");
+        localStorage.removeItem("profile");
       } else {
         setLogoutError("Failed to logout. Please try again.");
       }

@@ -4,6 +4,9 @@ export default {
   createTask: async (data) => {
     return await apiClient.post(`/v1/tasks`, data);
   },
+  createTasksBatch: async (data) => {
+    return await apiClient.post(`/v1/tasks/batch`, data);
+  },
   getTasks: async (url) => {
     return await apiClient.get(url);
   },
