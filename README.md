@@ -1,4 +1,4 @@
-# Task Management System (TMS)
+# Task Management System (TMS) Frontend Client
 
 Cloud-native Task Management System built using modern scalable
 architecture.
