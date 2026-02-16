@@ -83,7 +83,7 @@ export default function Hero() {
               </div>
               <div className="p-6">
                 <Image
-                  src="/dashboard.png"
+                  src="/hero-dashboard.png"
                   alt="Task Management Dashboard"
                   width={600}
                   height={400}

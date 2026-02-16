@@ -281,7 +281,7 @@ export default function NewTaskPage() {
           {mode === "batch" && batchTasks.length > 0 && (
             <div className="mt-4 border border-gray-200 rounded-md overflow-hidden">
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="text-left px-4 py-2">Title</th>
                     <th className="text-left px-4 py-2">Priority</th>
@@ -292,7 +292,10 @@ export default function NewTaskPage() {
                 </thead>
                 <tbody>
                   {batchTasks.map((t, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
+                    <tr
+                      key={index}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
                       <td className="px-4 py-2">{t.name}</td>
                       <td className="px-4 py-2">P{t.priority}</td>
                       <td className="px-4 py-2">{t.status}</td>
