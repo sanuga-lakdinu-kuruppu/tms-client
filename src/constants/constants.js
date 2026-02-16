@@ -63,7 +63,7 @@ export const StatusBadge = ({ status }) => {
   );
 };
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 20;
 
 export const BAR_CHART_STAT = [
   { label: "To Do", value: 40, color: "bg-gray-200" },
